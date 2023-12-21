@@ -46,244 +46,490 @@
 ;;;* QUERY RULES *
 ;;;***************
 
-(defrule determine-engine-state ""
+(defrule determine-duration ""
 
    (logical (start))
 
    =>
 
-   (assert (UI-state (display StartQuestion)
-                     (relation-asserted engine-starts)
-                     (response No)
-                     (valid-answers No Yes))))
+   (assert (UI-state (display TimeQuestion)
+                     (relation-asserted series-duration)
+                     (response Thirty)
+                     (valid-answers Thirty Sixty))))
    
-(defrule determine-runs-normally ""
+(defrule determine-black-and-white ""
 
-   (logical (engine-starts Yes))
-
-   =>
-
-   (assert (UI-state (display RunQuestion)
-                     (relation-asserted runs-normally)
-                     (response No)
-                     (valid-answers No Yes))))
-
-(defrule determine-rotation-state ""
-
-   (logical (engine-starts No))
+   (logical (series-duration Thirty))
 
    =>
 
-   (assert (UI-state (display RotateQuestion)
-                     (relation-asserted engine-rotates)
+   (assert (UI-state (display BlackWhiteQuestion)
+                     (relation-asserted black-white)
                      (response No)
                      (valid-answers No Yes))))
-   
-(defrule determine-sluggishness ""
 
-   (logical (runs-normally No))
+(defrule determine-animated ""
+
+   (logical (black-white No))
 
    =>
 
-   (assert (UI-state (display SluggishQuestion)
-                     (relation-asserted engine-sluggish)
+   (assert (UI-state (display AnimatedQuestion)
+                     (relation-asserted animated)
                      (response No)
                      (valid-answers No Yes))))
-   
-(defrule determine-misfiring ""
+                     
+ (defrule determine-laughter ""
 
-   (logical (runs-normally No))
+   (logical (animated No))
 
    =>
 
-   (assert (UI-state (display MisfireQuestion)
-                     (relation-asserted engine-misfires)
+   (assert (UI-state (display LaughterQuestion)
+                     (relation-asserted laughter)
                      (response No)
                      (valid-answers No Yes))))
+                     
+(defrule determine-paranormal ""
 
-(defrule determine-knocking ""
-
-   (logical (runs-normally No))
+   (logical (laughter No))
 
    =>
 
-   (assert (UI-state (display KnockQuestion)
-                     (relation-asserted engine-knocks)
+   (assert (UI-state (display ParanormalQuestion)
+                     (relation-asserted paranormal)
                      (response No)
-                     (valid-answers No Yes))))
+                     (valid-answers No Yes))))     
+                                     
+(defrule determine-mystery-or-space ""
 
-(defrule determine-low-output ""
-
-   (logical (runs-normally No))
+   (logical (paranormal No))
 
    =>
 
-   (assert (UI-state (display OutputQuestion)
-                     (relation-asserted engine-output-low)
-                     (response No)
-                     (valid-answers No Yes))))
+   (assert (UI-state (display MysteryQuestion)
+                     (relation-asserted mystery-or-space)
+                     (response Space)
+                     (valid-answers Space Mystery))))                     
+ 
+ (defrule determine-nostalgic ""
 
-(defrule determine-gas-level ""
-
-   (logical (engine-starts No)
-
-            (engine-rotates Yes))
+   (logical (mystery-or-space Space))
 
    =>
 
-   (assert (UI-state (display GasQuestion)
-                     (relation-asserted tank-has-gas)
+   (assert (UI-state (display NostalgicQuestion)
+                     (relation-asserted nostalgic)
                      (response No)
                      (valid-answers No Yes))))
+                     
+(defrule determine-solution-process ""
 
-(defrule determine-battery-state ""
+   (logical (mystery-or-space Mystery))
+
+   =>
+
+   (assert (UI-state (display SolutionProcessQuestion)
+                     (relation-asserted solution-process)
+                     (response Solution)
+                     (valid-answers Solution Process))))
+                     
+(defrule determine-little-thinking ""
+
+   (logical (laughter Yes))
+
+   =>
+
+   (assert (UI-state (display LittleThinkingQuestion)
+                     (relation-asserted little-thinking)
+                     (response No)
+                     (valid-answers No Yes))))                               
+
+(defrule determine-british-humour ""
+
+   (logical (little-thinking No))
+
+   =>
+
+   (assert (UI-state (display BritishHumourQuestion)
+                     (relation-asserted british-humour)
+                     (response No)
+                     (valid-answers No Yes))))  
+                     
+(defrule determine-sophisticate ""
+
+   (logical (british-humour No))
+
+   =>
+
+   (assert (UI-state (display SophisticateQuestion)
+                     (relation-asserted sophisticate)
+                     (response No)
+                     (valid-answers No Yes))))       
+                     
+ (defrule determine-rewatchability ""
+
+   (logical (sophisticate No))
+
+   =>
+
+   (assert (UI-state (display RewatchabilityQuestion)
+                     (relation-asserted rewatchability)
+                     (response No)
+                     (valid-answers No Yes))))    
+                     
+ (defrule determine-akward ""
+
+   (logical (rewatchability No))
+
+   =>
+
+   (assert (UI-state (display AkwardQuestion)
+                     (relation-asserted akward)
+                     (response No)
+                     (valid-answers No Yes))))  
+                     
+  (defrule determine-skit ""
+
+   (logical (little-thinking Yes))
+
+   =>
+
+   (assert (UI-state (display SkitQuestion)
+                     (relation-asserted skit)
+                     (response No)
+                     (valid-answers No Yes))))
   
-   (logical (engine-rotates No))
+  (defrule determine-weed ""
+
+   (logical (skit No))
 
    =>
-   
-   (assert (UI-state (display BatteryQuestion)
-                     (relation-asserted battery-has-charge)
+
+   (assert (UI-state (display WeedQuestion)
+                     (relation-asserted weed)
                      (response No)
                      (valid-answers No Yes))))
+  
+  (defrule determine-football ""
 
-(defrule determine-point-surface-state ""
+   (logical (weed No))
 
-   (or (logical (engine-starts No)  
-   
-                (engine-rotates Yes))
+   =>
+
+   (assert (UI-state (display FootballQuestion)
+                     (relation-asserted football)
+                     (response No)
+                     (valid-answers No Yes))))  
                      
-       (logical (engine-output-low Yes)))
+   (defrule determine-satire-insanity ""
+
+   (logical (football No))
 
    =>
 
-   (assert (UI-state (display PointsQuestion)
-                     (relation-asserted point-surface-state)
-                     (response Normal)
-                     (valid-answers Normal Burned Contaminated))))
+   (assert (UI-state (display SatireQuestion)
+                     (relation-asserted satire-insanity)
+                     (response Satire)
+                     (valid-answers Satire Insanity))))
+                     
+   (defrule determine-shit ""
 
-(defrule determine-conductivity-test ""
-   
-   (logical (engine-starts No)  
-   
-            (engine-rotates No)
-            
-            (battery-has-charge Yes))
+   (logical (weed Yes))
 
    =>
 
-   (assert (UI-state (display CoilQuestion)
-                     (relation-asserted conductivity-test-positive)
+   (assert (UI-state (display ShitQuestion)
+                     (relation-asserted shit)
                      (response No)
                      (valid-answers No Yes))))
+                     
+ (defrule determine-odd ""
 
+   (logical (skit Yes))
+
+   =>
+
+   (assert (UI-state (display QuirkyQuestion)
+                     (relation-asserted odd)
+                     (response No)
+                     (valid-answers No Yes))))
+                     
+  (defrule determine-dick ""
+
+   (logical (animated Yes))
+
+   =>
+
+   (assert (UI-state (display DickQuestion)
+                     (relation-asserted dick)
+                     (response No)
+                     (valid-answers No Yes))))
+                     
+   (defrule determine-gratuitous ""
+
+   (logical (dick No))
+
+   =>
+
+   (assert (UI-state (display GratuitousQuestion)
+                     (relation-asserted gratuitous)
+                     (response No)
+                     (valid-answers No Yes)))) 
+                     
+   (defrule determine-childish-mature ""
+
+   (logical (gratuitous No))
+
+   =>
+
+   (assert (UI-state (display ChildishQuestion)
+                     (relation-asserted childish-mature)
+                     (response Childish)
+                     (valid-answers Childish Mature))))
+                     
+   (defrule determine-commentary ""
+
+   (logical (childish-mature Childish))
+
+   =>
+
+   (assert (UI-state (display CommentaryQuestion)
+                     (relation-asserted commentary)
+                     (response No)
+                     (valid-answers No Yes))))
+                     
+   (defrule determine-fucked ""
+
+   (logical (childish-mature Mature))
+
+   =>
+
+   (assert (UI-state (display FuckedQuestion)
+                     (relation-asserted fucked)
+                     (response No)
+                     (valid-answers No Yes))))                                                        
+                                                                                                                                                                                                          
 ;;;****************
-;;;* REPAIR RULES *
+;;;* CONCLUSION RULES *
 ;;;****************
 
-(defrule normal-engine-state-conclusions ""
+(defrule nostalgic-conclusion-no ""
 
-   (logical (runs-normally Yes))
+   (logical (nostalgic No))
    
    =>
 
-   (assert (UI-state (display NoRepair)
-                     (state final))))
-
-(defrule engine-sluggish ""
-
-   (logical (engine-sluggish Yes))
-   
-   =>
-
-   (assert (UI-state (display FuelLineRepair)
-                     (state final))))
-
-(defrule engine-misfires ""
-
-   (logical (engine-misfires Yes))
-
-   =>
-
-   (assert (UI-state (display PointGapRepair)
-                     (state final))))
-
-(defrule engine-knocks ""
-
-   (logical (engine-knocks Yes))
-
-   =>
-
-   (assert (UI-state (display AdjustTimingRepair)
-                     (state final))))
-
-(defrule tank-out-of-gas ""
-
-   (logical (tank-has-gas No))
-
-   =>
-
-   (assert (UI-state (display AddGasRepair)
-                     (state final))))
-   
-(defrule battery-dead ""
-
-   (logical (battery-has-charge No))
-   
-   =>
-
-   (assert (UI-state (display ReplaceBatteryRepair)
-                     (state final))))
-   
-(defrule point-surface-state-burned ""
-
-   (logical (point-surface-state Burned))
-
-   =>
-
-   (assert (UI-state (display ReplacePointsRepair)
+   (assert (UI-state (display FireflyShow)
                      (state final))))
                      
-(defrule point-surface-state-contaminated ""
-   
-   (logical (point-surface-state Contaminated))
-   
-   =>
+ (defrule nostalgic-conclusion-yes ""
 
-   (assert (UI-state (display CleanPointsRepair)
-                     (state final))))
-
-(defrule conductivity-test-positive-yes ""
-
-   (logical (conductivity-test-positive Yes))
+   (logical (nostalgic Yes))
    
    =>
 
-   (assert (UI-state (display LeadWireRepair)
+   (assert (UI-state (display StarTrek2Show)
                      (state final))))
-                     
-(defrule conductivity-test-positive-no ""
-
-   (logical (conductivity-test-positive No))
       
-   =>
+(defrule solution-conclusion ""
 
-   (assert (UI-state (display CoilRepair)
-                     (state final))))
-                     
-(defrule no-repairs ""
-
-   (declare (salience -10))
-  
-   (logical (UI-state (id ?id)))
+   (logical (solution-process Solution))
    
-   (state-list (current ?id))
-     
    =>
-  
-   (assert (UI-state (display MechanicRepair)
+
+   (assert (UI-state (display RockfordShow)
+                     (state final))))       
+                     
+(defrule process-conclusion ""
+
+   (logical (solution-process Process))
+   
+   =>
+
+   (assert (UI-state (display ColumboShow)
+                     (state final))))                     
+
+ (defrule paranormal-conclusion-yes ""
+
+   (logical (paranormal Yes))
+   
+   =>
+
+   (assert (UI-state (display XFilesShow)
                      (state final))))
                      
+ (defrule akward-conclusion-no ""
+
+   (logical (akward No))
+   
+   =>
+
+   (assert (UI-state (display CheersShow)
+                     (state final))))                     
+                     
+ (defrule akward-conclusion-yes ""
+
+   (logical (akward Yes))
+   
+   =>
+
+   (assert (UI-state (display LouiseShow)
+                     (state final)))) 
+                     
+ (defrule rewatchability-conclusion-yes ""
+
+   (logical (rewatchability Yes))
+   
+   =>
+
+   (assert (UI-state (display ArrestedShow)
+                     (state final))))      
+                                    
+  (defrule sophisticate-conclusion-yes ""
+
+   (logical (sophisticate Yes))
+   
+   =>
+
+   (assert (UI-state (display FrasierShow)
+                     (state final))))
+                     
+                     
+  (defrule british-homour-conclusion-yes ""
+
+   (logical (british-homour Yes))
+   
+   =>
+
+   (assert (UI-state (display FawltyShow)
+                     (state final))))    
+                     
+   (defrule satire-conclusion ""
+
+   (logical (satire-insanity Satire))
+   
+   =>
+
+   (assert (UI-state (display RecreationShow)
+                     (state final)))) 
+                     
+   (defrule insanity-conclusion ""
+
+   (logical (satire-insanity Insanity))
+   
+   =>
+
+   (assert (UI-state (display PhiladelphiaShow)
+                     (state final))))         
+                     
+   (defrule football-conclusion-yes ""
+
+   (logical (football Yes))
+   
+   =>
+
+   (assert (UI-state (display LeagueShow)
+                     (state final))))
+                     
+  (defrule shit-conclusion-no ""
+
+   (logical (shit No))
+   
+   =>
+
+   (assert (UI-state (display WorkaholicsShow)
+                     (state final))))
+                     
+   (defrule shit-conclusion-yes ""
+
+   (logical (shit Yes))
+   
+   =>
+
+   (assert (UI-state (display TrailerShow)
+                     (state final))))   
+                     
+ (defrule odd-conclusion-no ""
+
+   (logical (odd No))
+   
+   =>
+
+   (assert (UI-state (display ChappelleShow)
+                     (state final))))
+                     
+   (defrule odd-conclusion-yes ""
+
+   (logical (odd Yes))
+   
+   =>
+
+   (assert (UI-state (display KidsShow)
+                     (state final))))
+                     
+   (defrule commentary-conclusion-no ""
+
+   (logical (commentary No))
+   
+   =>
+
+   (assert (UI-state (display FuturamaShow)
+                     (state final))))
+                     
+   (defrule commentary-conclusion-yes ""
+
+   (logical (commentary Yes))
+   
+   =>
+
+   (assert (UI-state (display SouthParkShow)
+                     (state final))))
+                     
+    (defrule fucked-conclusion-no ""
+
+   (logical (fucked No))
+   
+   =>
+
+   (assert (UI-state (display ArcherShow)
+                     (state final))))
+                     
+  (defrule fucked-conclusion-yes ""
+
+   (logical (fucked Yes))
+   
+   =>
+
+   (assert (UI-state (display RenShow)
+                     (state final))))
+                     
+   (defrule gratuitous-conclusion-yes ""
+
+   (logical (gratuitous Yes))
+   
+   =>
+
+   (assert (UI-state (display DeadHighschoolShow)
+                     (state final))))
+                     
+   (defrule dick-conclusion-yes ""
+
+   (logical (dick Yes))
+   
+   =>
+
+   (assert (UI-state (display FamilyGuyShow)
+                     (state final))))
+                     
+(defrule black-white-conclusion-yes ""
+
+   (logical (black-white Yes))
+   
+   =>
+
+   (assert (UI-state (display TwilightShow)
+                     (state final))))                                                                                                                                                                                                                                                                                                              
 ;;;*************************
 ;;;* GUI INTERACTION RULES *
 ;;;*************************
