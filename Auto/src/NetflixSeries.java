@@ -44,24 +44,24 @@ or makeInstance call, retain it and then release it after the call is made.
 
 */
 
-class AutoDemo implements ActionListener
+class NetflixSeries implements ActionListener
   {  
    JLabel displayLabel;
    JButton nextButton;
    JButton prevButton;
    JPanel choicesPanel;
    ButtonGroup choicesButtons;
-   ResourceBundle autoResources;
+   ResourceBundle netflixSeriesResources;
  
    Environment clips;
    boolean isExecuting = false;
    Thread executionThread;
       
-   AutoDemo()
+   NetflixSeries()
      {  
       try
         {
-         autoResources = ResourceBundle.getBundle("resources.AutoResources",Locale.getDefault());
+         netflixSeriesResources = ResourceBundle.getBundle("resources.NetflixSeriesResources",Locale.getDefault());
         }
       catch (MissingResourceException mre)
         {
@@ -73,7 +73,7 @@ class AutoDemo implements ActionListener
       /* Create a new JFrame container. */
       /*================================*/
      
-      JFrame jfrm = new JFrame(autoResources.getString("AutoDemo"));  
+      JFrame jfrm = new JFrame(netflixSeriesResources.getString("NetflixSeries"));  
  
       /*=============================*/
       /* Specify FlowLayout manager. */
@@ -114,12 +114,12 @@ class AutoDemo implements ActionListener
 
       JPanel buttonPanel = new JPanel(); 
       
-      prevButton = new JButton(autoResources.getString("Prev"));
+      prevButton = new JButton(netflixSeriesResources.getString("Prev"));
       prevButton.setActionCommand("Prev");
       buttonPanel.add(prevButton);
       prevButton.addActionListener(this);
       
-      nextButton = new JButton(autoResources.getString("Next"));
+      nextButton = new JButton(netflixSeriesResources.getString("Next"));
       nextButton.setActionCommand("Next");
       buttonPanel.add(nextButton);
       nextButton.addActionListener(this);
@@ -133,15 +133,15 @@ class AutoDemo implements ActionListener
       jfrm.getContentPane().add(buttonPanel); 
 
       /*========================*/
-      /* Load the auto program. */
+      /* Load the netflix series program. */
       /*========================*/
       
       clips = new Environment();
       
-      clips.load("autodemo.clp");
+      clips.load("netflixseries.clp");
       
       clips.reset();
-      runAuto();
+      runNetflixSeries();
 
       /*====================*/
       /* Display the frame. */
@@ -179,19 +179,19 @@ class AutoDemo implements ActionListener
       if (fv.getFactSlot("state").toString().equals("final"))
         { 
          nextButton.setActionCommand("Restart");
-         nextButton.setText(autoResources.getString("Restart")); 
+         nextButton.setText(netflixSeriesResources.getString("Restart")); 
          prevButton.setVisible(true);
         }
       else if (fv.getFactSlot("state").toString().equals("initial"))
         {
          nextButton.setActionCommand("Next");
-         nextButton.setText(autoResources.getString("Next"));
+         nextButton.setText(netflixSeriesResources.getString("Next"));
          prevButton.setVisible(false);
         }
       else
         { 
          nextButton.setActionCommand("Next");
-         nextButton.setText(autoResources.getString("Next"));
+         nextButton.setText(netflixSeriesResources.getString("Next"));
          prevButton.setVisible(true);
         }
       
@@ -212,9 +212,9 @@ class AutoDemo implements ActionListener
          JRadioButton rButton;
                         
          if (bv.toString().equals(selected))
-            { rButton = new JRadioButton(autoResources.getString(bv.toString()),true); }
+            { rButton = new JRadioButton(netflixSeriesResources.getString(bv.toString()),true); }
          else
-            { rButton = new JRadioButton(autoResources.getString(bv.toString()),false); }
+            { rButton = new JRadioButton(netflixSeriesResources.getString(bv.toString()),false); }
                      
          rButton.setActionCommand(bv.toString());
          choicesPanel.add(rButton);
@@ -227,7 +227,7 @@ class AutoDemo implements ActionListener
       /* Set the label to the display text. */
       /*====================================*/
 
-      String theText = autoResources.getString(fv.getFactSlot("display").symbolValue());
+      String theText = netflixSeriesResources.getString(fv.getFactSlot("display").symbolValue());
             
       wrapLabelText(displayLabel,theText);
       
@@ -253,9 +253,9 @@ class AutoDemo implements ActionListener
      }
  
    /***********/
-   /* runAuto */
+   /* runNetflixSeries */
    /***********/  
-   public void runAuto()
+   public void runNetflixSeries()
      {
       Runnable runThread = 
          new Runnable()
@@ -316,17 +316,17 @@ class AutoDemo implements ActionListener
                                ")");
            }
            
-         runAuto();
+         runNetflixSeries();
         }
       else if (ae.getActionCommand().equals("Restart"))
         { 
          clips.reset(); 
-         runAuto();
+         runNetflixSeries();
         }
       else if (ae.getActionCommand().equals("Prev"))
         {
          clips.assertString("(prev " + currentID + ")");
-         runAuto();
+         runNetflixSeries();
         }
      }
 
@@ -392,7 +392,7 @@ class AutoDemo implements ActionListener
       SwingUtilities.invokeLater(
         new Runnable() 
           {  
-           public void run() { new AutoDemo(); }  
+           public void run() { new NetflixSeries(); }  
           });   
      }  
   }
