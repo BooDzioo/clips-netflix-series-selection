@@ -57,11 +57,11 @@ class NetflixSeries implements ActionListener
    boolean isExecuting = false;
    Thread executionThread;
       
-   NetflixSeries()
+   NetflixSeries() 
      {  
       try
         {
-         netflixSeriesResources = ResourceBundle.getBundle("resources.NetflixSeriesResources",Locale.getDefault());
+         netflixSeriesResources = ResourceBundle.getBundle("resources.NetflixSeriesResources_eng",Locale.getDefault());
         }
       catch (MissingResourceException mre)
         {
