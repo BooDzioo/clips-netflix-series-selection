@@ -309,7 +309,167 @@
                      (relation-asserted fucked)
                      (response No)
                      (valid-answers No Yes))))                                                        
-                                                                                                                                                                                                          
+
+;;;* 60 mins *
+
+(defrule determine-age-story-line ""
+
+   (logical (series-duration Sixty))
+
+   =>
+
+   (assert (UI-state (display AgeStoryQuestion)
+                     (relation-asserted age-story-line)
+                     (response No)
+                     (valid-answers No Yes))))
+                                                     
+(defrule determine-crime-drama ""
+
+   (logical (age-story-line No))
+
+   =>
+
+   (assert (UI-state (display CrimeDramaQuestion)
+                     (relation-asserted crime-drama)
+                     (response No)
+                     (valid-answers No Yes))))
+                      
+                     
+(defrule determine-cliffhanger ""
+
+   (logical (crime-drama Yes))
+
+   =>
+
+   (assert (UI-state (display CliffhangerQuestion)
+                     (relation-asserted mystery-or-cliffhanger)
+                     (response Mystery)
+                     (valid-answers Mystery Thriller))))
+                                  
+(defrule determine-intense ""
+
+   (logical (mystery-or-cliffhanger Thriller))
+
+   =>
+
+   (assert (UI-state (display IntenseQuestion)
+                     (relation-asserted intense)
+                     (response No)
+                     (valid-answers No Yes))))
+                     
+(defrule determine-good-or-bad-guys ""
+
+   (logical (intense No))
+
+   =>
+
+   (assert (UI-state (display GoodBadQuestion)
+                     (relation-asserted good-or-bad-guys)
+                     (response Good)
+                     (valid-answers Good Bad))))
+                                                                
+(defrule determine-sciFi ""
+
+   (logical (crime-drama No))
+
+   =>
+
+   (assert (UI-state (display SciFiQuestion)
+                     (relation-asserted sci-fi)
+                     (response No)
+                     (valid-answers No Yes))))           
+                     
+(defrule determine-outer-space ""
+
+   (logical (sci-fi Yes))
+
+   =>
+
+   (assert (UI-state (display OuterSpaceQuestion)
+                     (relation-asserted outer-space)
+                     (response No)
+                     (valid-answers No Yes))))
+                     
+                     
+(defrule determine-explore-or-war ""
+
+   (logical (outer-space Yes))
+
+   =>
+
+   (assert (UI-state (display ExploreOrWarQuestion)
+                     (relation-asserted explore-or-war)
+                     (response Explore)
+                     (valid-answers Explore War))))           
+                     
+(defrule determine-less-science ""
+
+   (logical (outer-space No))
+
+   =>
+
+   (assert (UI-state (display LessScienceQuestion)
+                     (relation-asserted less-science)
+                     (response No)
+                     (valid-answers No Yes))))    
+                     
+(defrule determine-brains ""
+
+   (logical (less-science Yes))
+
+   =>
+
+   (assert (UI-state (display BrainsQuestion)
+                     (relation-asserted brains)
+                     (response No)
+                     (valid-answers No Yes))))  
+
+
+(defrule determine-politics ""
+
+   (logical (sci-fi No))
+
+   =>
+
+   (assert (UI-state (display PoliticsQuestion)
+                     (relation-asserted politics)
+                     (response No)
+                     (valid-answers No Yes))))
+
+(defrule determine-kevin ""
+
+   (logical (politics Yes))
+
+   =>
+
+   (assert (UI-state (display KevinQuestion)
+                     (relation-asserted kevin)
+                     (response No)
+                     (valid-answers No Yes))))
+                    
+(defrule determine-stepped ""
+
+   (logical (politics No))
+
+   =>
+
+   (assert (UI-state (display SteepedQuestion)
+                     (relation-asserted stepped)
+                     (response No)
+                     (valid-answers No Yes))))       
+                     
+(defrule determine-strange ""
+
+   (logical (stepped No))
+
+   =>
+
+   (assert (UI-state (display StrangeThingsQuestion)
+                     (relation-asserted strange)
+                     (response No)
+                     (valid-answers No Yes))))
+                     
+                                
 ;;;****************
 ;;;* CONCLUSION RULES *
 ;;;****************
@@ -529,7 +689,149 @@
    =>
 
    (assert (UI-state (display TwilightShow)
-                     (state final))))                                                                                                                                                                                                                                                                                                              
+                     (state final))))      
+                     
+(defrule age-story-line-conclusion-yes ""
+
+   (logical (age-story-line Yes))
+   
+   =>
+
+   (assert (UI-state (display FreaksShow)
+                     (state final))))      
+                     
+                     
+(defrule classic-mystery-conclusion ""
+
+   (logical (mystery-or-cliffhanger Mystery))
+
+   =>
+
+   (assert (UI-state (display SherlockShow)
+                     (state final))))  
+                     
+(defrule intense-show-conclusion ""
+
+   (logical (intense Yes))
+
+   =>
+
+   (assert (UI-state (display BreakingBadShow)
+                     (state final))))  
+
+
+(defrule law-and-orders-conclusion ""
+
+   (logical (good-or-bad-guys Good))
+
+   =>
+
+   (assert (UI-state (display LawAndOrdersShow)
+                     (state final))))
+                     
+(defrule sons-of-anarchy-conclusion ""
+
+   (logical (good-or-bad-guys Bad))
+
+   =>
+
+   (assert (UI-state (display SonsOfAnarchyShow)
+                     (state final))))  
+                     
+(defrule star-trek-conclusion ""
+
+   (logical (explore-or-war Explore))
+
+   =>
+
+   (assert (UI-state (display StartTrekShow)
+                     (state final))))  
+                     
+(defrule battlestar-conclusion ""
+
+   (logical (explore-or-war War))
+
+   =>
+
+   (assert (UI-state (display BattlestarShow)
+                     (state final))))   
+                     
+(defrule sliders-conclusion-no ""
+
+   (logical (less-science No))
+
+   =>
+
+   (assert (UI-state (display SliderShow)
+                     (state final))))   
+                  
+(defrule brains-conclusion-yes ""
+
+   (logical (brains Yes))
+
+   =>
+
+   (assert (UI-state (display TWDShow)
+                     (state final)))) 
+
+
+(defrule brains-conclusion-no ""
+
+   (logical (brains No))
+
+   =>
+
+   (assert (UI-state (display LostShow)
+                     (state final))))     
+                     
+                     
+(defrule kevin-conclusion-no ""
+
+   (logical (kevin No))
+
+   =>
+
+   (assert (UI-state (display HouseCardsShow)
+                     (state final)))) 
+                     
+(defrule kevin-conclusion-yes ""
+
+   (logical (kevin Yes))
+
+   =>
+
+   (assert (UI-state (display TWWShow)
+                     (state final))))         
+
+
+(defrule stepped-conclusion-yes ""
+
+   (logical (stepped Yes))
+
+   =>
+
+   (assert (UI-state (display TudorsShow)
+                     (state final))))       
+                     
+(defrule strange-conclusion-yes ""
+
+   (logical (strange Yes))
+
+   =>
+
+   (assert (UI-state (display TwinPeaksShow)
+                     (state final))))
+                     
+(defrule strange-conclusion-no ""
+
+   (logical (strange No))
+
+   =>
+
+   (assert (UI-state (display MadMenShow)
+                     (state final))))    
+                                    
+                                                                                                                                                                                                                                                                                                              
 ;;;*************************
 ;;;* GUI INTERACTION RULES *
 ;;;*************************
