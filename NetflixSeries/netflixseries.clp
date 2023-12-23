@@ -558,7 +558,7 @@
                      
   (defrule british-homour-conclusion-yes ""
 
-   (logical (british-homour Yes))
+   (logical (british-humour Yes))
    
    =>
 
