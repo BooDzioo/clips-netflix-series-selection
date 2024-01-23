@@ -21,12 +21,14 @@ public class MyPlayer extends Player {
     @Override
     public Move nextMove(Board board) {
         long startTime = System.currentTimeMillis();
-        long endTime = startTime + 5000;  // 5 seconds time limit
+        long endTime = startTime + (getTime()*(long)0.9);//;
         List<Move> moves = board.getMovesFor(getColor());
         Move bestMove = null;
         int maxScore = Integer.MIN_VALUE;
 
         for (Move move : moves) {
+        	//System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime());
+        	
             Board tempBoard = board.clone();
             tempBoard.doMove(move);
 
@@ -34,9 +36,11 @@ public class MyPlayer extends Player {
             if (score > maxScore) {
                 maxScore = score;
                 bestMove = move;
+                System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime()+ " score: " + score);
             }
         }
-
+        
+        System.out.println("Typ ruchu: " + bestMove.getClass().getSimpleName() + "info: " + bestMove.toString() + "time:" + getTime()+ " maxScore: " + maxScore);
         return bestMove;
     }
 
@@ -63,7 +67,7 @@ public class MyPlayer extends Player {
             }
 
             if (beta <= alpha) {
-                break;  // Beta cut-off
+                break;
             }
         }
 
@@ -73,17 +77,20 @@ public class MyPlayer extends Player {
     private int evaluate(Board board) {
         int score = 0;
 
-        // Przykładowa heurystyka: Liczenie liczby dwóch kamieni gracza obok siebie w jednym rzędzie
+        
         for (int row = 0; row < board.getSize(); row++) {
             for (int col = 0; col < board.getSize(); col++) {
                 if (board.getState(row, col) == getColor()) {
-                    // Sprawdzamy poziome i pionowe rządzenia
-                    score += countAdjacentStones(board, row, col, 1, 0);  // Poziomo
-                    score += countAdjacentStones(board, row, col, 0, 1);  // Pionowo
+                	int actualHorizontalScore = countAdjacentStones(board, row, col, true);
+                    
+                    if(actualHorizontalScore != -1)
+                    	score += actualHorizontalScore;
+                    
+                    
+                    int actualVerticalScore = countAdjacentStones(board, row, col, false);
+                    if(actualVerticalScore != -1)
+                    	score += actualVerticalScore;
 
-                    // Sprawdzamy przekątne
-                    score += countAdjacentStones(board, row, col, 1, 1);  // \ Przekątna
-                    score += countAdjacentStones(board, row, col, 1, -1); // / Przekątna
                 }
             }
         }
@@ -91,21 +98,54 @@ public class MyPlayer extends Player {
         return score;
     }
 
-    private int countAdjacentStones(Board board, int row, int col, int rowIncrement, int colIncrement) {
+    private int countAdjacentStones(Board board, int row, int col, boolean horizontal) {
         int count = 0;
         Player.Color playerColor = getColor();
+        
+        Player.Color enemyColor;
+        if(playerColor == Player.Color.PLAYER1)
+        	enemyColor = Player.Color.PLAYER2;
+        else
+        	enemyColor = Player.Color.PLAYER1;
+        
 
-        // Sprawdzamy 2 kamienie obok siebie w danym kierunku
-        for (int i = 0; i < 2; i++) {
-            int newRow = row + i * rowIncrement;
-            int newCol = col + i * colIncrement;
-            
-            List<Move> moves = board.getMovesFor(playerColor);
+        int enemyCount = 0;
+        
+        if(horizontal) {
+             for (int iterCol = 0; iterCol < board.getSize(); iterCol++) {
+                 if (board.getState(row, iterCol) == playerColor) {
+                	 count++;
+                 }
+                 else if(board.getState(row, iterCol) == enemyColor)
+                 {
+                	 enemyCount++;
 
-            if (board.getState(newRow, newCol) == playerColor) {
-                count++;
-            }
+                	 if(enemyCount >= 2) {
+                		 count = -1;
+                		 break;
+                	 }
+                 }
+             }
         }
+        else
+        {
+        	for (int iterRow = 0; iterRow < board.getSize(); iterRow++) {
+        		if (board.getState(iterRow, col) == playerColor) {
+        			count++;
+                }
+        		else if(board.getState(iterRow, col) == enemyColor)
+                {
+               	 	enemyCount++;
+               	 	
+					if(enemyCount >= 2) {
+						count = -1;
+						break;
+					}
+                }
+        	}
+        }
+        
+        System.out.println("count: " + count + " row:" + row + " col: " + col + " horizontal: " + horizontal);
 
         return count;
     }
