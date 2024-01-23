@@ -18,26 +18,39 @@ public class MyPlayer extends Player {
         return "Mikolaj Napierala 151812 Hubert Bogdanski 151751";
     }
 
+    long startTime;
+    
     @Override
     public Move nextMove(Board board) {
-        long startTime = System.currentTimeMillis();
-        long endTime = startTime + (getTime()*(long)0.9);//;
+    	startTime = System.currentTimeMillis();
+        //long endTime = startTime + (getTime()*(long)0.9);
+        
+        long timeInterval = getTime();
+        long endTime = startTime + (long) (timeInterval - 300);
+
+    	System.out.println("start info: " + getTime() + " startTime + (long) (timeInterval * 0.9): " + (startTime + (long) (timeInterval * 0.9)));
+    	System.out.println("start info: " + startTime + "endTime: " + endTime);
+
+    	
         List<Move> moves = board.getMovesFor(getColor());
         Move bestMove = null;
         int maxScore = Integer.MIN_VALUE;
 
-        for (Move move : moves) {
-        	//System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime());
-        	
-            Board tempBoard = board.clone();
-            tempBoard.doMove(move);
-
-            int score = minMax(tempBoard, 4, Integer.MIN_VALUE, Integer.MAX_VALUE, false, endTime);
-            if (score > maxScore) {
-                maxScore = score;
-                bestMove = move;
-                System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime()+ " score: " + score);
-            }
+        for(int depth = 1; depth <= 4; depth++)
+        {        
+	        for (Move move : moves) {
+	        	//System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime());
+	        	
+	            Board tempBoard = board.clone();
+	            tempBoard.doMove(move);
+	
+	            int score = minMax(tempBoard, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, false, endTime);
+	            if (score > maxScore) {
+	                maxScore = score;
+	                bestMove = move;
+	                System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime()+ " score: " + score);
+	            }
+	        }
         }
         
         System.out.println("Typ ruchu: " + bestMove.getClass().getSimpleName() + "info: " + bestMove.toString() + "time:" + getTime()+ " maxScore: " + maxScore);
@@ -45,14 +58,18 @@ public class MyPlayer extends Player {
     }
 
     private int minMax(Board board, int depth, int alpha, int beta, boolean maximizingPlayer, long endTime) {
-        if (System.currentTimeMillis() >= endTime || depth == 0 || board.getWinner(getColor()) != null) {
+    	
+        if (System.currentTimeMillis() >= endTime || depth == 0) {
             return evaluate(board);
         }
-
+        
         List<Move> moves = board.getMovesFor(maximizingPlayer ? getColor() : getOpponent(getColor()));
         int bestValue = maximizingPlayer ? Integer.MIN_VALUE : Integer.MAX_VALUE;
 
         for (Move move : moves) {
+        	 if (System.currentTimeMillis() >= endTime)
+        		 return 0;
+        	 
             Board tempBoard = board.clone();
             tempBoard.doMove(move);
             last_move = move;
@@ -77,6 +94,7 @@ public class MyPlayer extends Player {
     private int evaluate(Board board) {
         int score = 0;
 
+        Player.Color enemyColor  = getOpponent(getColor());
         
         for (int row = 0; row < board.getSize(); row++) {
             for (int col = 0; col < board.getSize(); col++) {
@@ -90,7 +108,6 @@ public class MyPlayer extends Player {
                     int actualVerticalScore = countAdjacentStones(board, row, col, false);
                     if(actualVerticalScore != -1)
                     	score += actualVerticalScore;
-
                 }
             }
         }
@@ -98,7 +115,7 @@ public class MyPlayer extends Player {
         return score;
     }
 
-    
+    private int SCORE_5_STRIKE = 10000;
     private int SCORE_4_STRIKE = 1000;
     private int SCORE_3_STRIKE = 100;
     private int SCORE_2_STRIKE = 10;
@@ -112,6 +129,7 @@ public class MyPlayer extends Player {
 
         int enemyCount = 0;
         int strike = 0;
+        int enemyStrike = 0;
         
         if(horizontal) {
              for (int iterCol = 0; iterCol < board.getSize(); iterCol++) {
@@ -125,35 +143,47 @@ public class MyPlayer extends Player {
                        	 count += SCORE_3_STRIKE;
                         else if(strike == 4)
                        	 count += SCORE_4_STRIKE;
+                        else if(strike == 5)
+                    	 count += SCORE_5_STRIKE;
+                	 
+                	 
+                	 enemyStrike = 0;
+                	 
                  }
                  else if(board.getState(row, iterCol) == enemyColor)
                  {
                 	 enemyCount++;
+                	 enemyStrike++;
                 	 
-                	 if(strike == 2)
-                       	 count += SCORE_2_STRIKE;
-                        else if(strike == 3)
-                       	 count += SCORE_3_STRIKE;
-                        else if(strike == 4)
-                       	 count += SCORE_4_STRIKE;
                 	 
                 	 strike = 0;
-                	 if(enemyCount >= 2) {
-                		 count = -1;
-                		 break;
-                	 }
+//                	 if(enemyCount >= 2) {
+//                		 count = -1;
+//                		 break;
+//                	 }
                  }
                  else
                  {
+         			if(strike == 2)
+                     	 count += SCORE_2_STRIKE;
+                      else if(strike == 3)
+                     	 count += SCORE_3_STRIKE;
+                      else if(strike == 4)
+                     	 count += SCORE_4_STRIKE;
+                      else if(strike == 5)
+                    	  count += SCORE_5_STRIKE;
+         			
                 	 strike = 0;
                  }
                  
                  if(strike == 2)
-                	 count += SCORE_2_STRIKE;
-                 else if(strike == 3)
-                	 count += SCORE_3_STRIKE;
-                 else if(strike == 4)
-                	 count += SCORE_4_STRIKE;
+                   	 count += SCORE_2_STRIKE;
+                    else if(strike == 3)
+                   	 count += SCORE_3_STRIKE;
+                    else if(strike == 4)
+                   	 count += SCORE_4_STRIKE;
+                    else if(strike == 5)
+                	 count += SCORE_5_STRIKE;
              }
         }
         else
@@ -166,20 +196,12 @@ public class MyPlayer extends Player {
         		else if(board.getState(iterRow, col) == enemyColor)
                 {
                	 	enemyCount++;
-               	 	
-               	 	if(strike == 2)
-                   	 count += SCORE_2_STRIKE;
-                    else if(strike == 3)
-                   	 count += SCORE_3_STRIKE;
-                    else if(strike == 4)
-                   	 count += SCORE_4_STRIKE;
-               	 	
                	 	strike = 0;
                	 	
-					if(enemyCount >= 2) {
-						count = -1;
-						break;
-					}
+//					if(enemyCount >= 2) {
+//						count = -1;
+//						break;
+//					}
                 }
         		else
         		{
@@ -189,20 +211,24 @@ public class MyPlayer extends Player {
                       	 count += SCORE_3_STRIKE;
                        else if(strike == 4)
                       	 count += SCORE_4_STRIKE;
+                       else if(strike == 5)
+                   	 count += SCORE_5_STRIKE;
         			
         			strike = 0;
         		}
         		
         		if(strike == 2)
-                 	 count += SCORE_2_STRIKE;
-                  else if(strike == 3)
-                 	 count += SCORE_3_STRIKE;
-                  else if(strike == 4)
-                 	 count += SCORE_4_STRIKE;
+                  	 count += SCORE_2_STRIKE;
+                   else if(strike == 3)
+                  	 count += SCORE_3_STRIKE;
+                   else if(strike == 4)
+                  	 count += SCORE_4_STRIKE;
+                   else if(strike == 5)
+                	 count += SCORE_5_STRIKE;
         	}
         }
         
-        System.out.println("count: " + count + " row:" + row + " col: " + col + " horizontal: " + horizontal);
+        //System.out.println("count: " + count + " row:" + row + " col: " + col + " horizontal: " + horizontal);
 
         return count;
     }
