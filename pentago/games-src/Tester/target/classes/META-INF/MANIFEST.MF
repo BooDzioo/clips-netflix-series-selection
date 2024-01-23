@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Build-Jdk-Spec: 19
+Class-Path: BoardGameEngine-2.0-SNAPSHOT.jar BoardGame-2.0-SNAPSHOT.jar
+Main-Class: put.ai.games.tester.Tester
+Created-By: Maven Integration for Eclipse
+
