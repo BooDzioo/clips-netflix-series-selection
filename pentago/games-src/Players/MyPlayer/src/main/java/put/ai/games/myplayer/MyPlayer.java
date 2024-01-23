@@ -17,19 +17,14 @@ public class MyPlayer extends Player {
     public String getName() {
         return "Mikolaj Napierala 151812 Hubert Bogdanski 151751";
     }
-
-    long startTime;
     
     @Override
     public Move nextMove(Board board) {
-    	startTime = System.currentTimeMillis();
+    	long startTime = System.currentTimeMillis();
         //long endTime = startTime + (getTime()*(long)0.9);
         
         long timeInterval = getTime();
         long endTime = startTime + (long) (timeInterval - 300);
-
-    	System.out.println("start info: " + getTime() + " startTime + (long) (timeInterval * 0.9): " + (startTime + (long) (timeInterval * 0.9)));
-    	System.out.println("start info: " + startTime + "endTime: " + endTime);
 
     	
         List<Move> moves = board.getMovesFor(getColor());
@@ -51,9 +46,11 @@ public class MyPlayer extends Player {
 	                System.out.println("Typ ruchu: " + move.getClass().getSimpleName() + "info: " + move.toString() + "time:" + getTime()+ " score: " + score);
 	            }
 	        }
+	        
+	        System.out.println("Typ ruchu: " + bestMove.getClass().getSimpleName() + " depth: " + depth+ "info: " + bestMove.toString() + "time:" + getTime()+ " maxScore: " + maxScore);
         }
         
-        System.out.println("Typ ruchu: " + bestMove.getClass().getSimpleName() + "info: " + bestMove.toString() + "time:" + getTime()+ " maxScore: " + maxScore);
+        
         return bestMove;
     }
 
@@ -100,14 +97,11 @@ public class MyPlayer extends Player {
             for (int col = 0; col < board.getSize(); col++) {
                 if (board.getState(row, col) == getColor()) {
                 	int actualHorizontalScore = countAdjacentStones(board, row, col, true);
-                    
-                    if(actualHorizontalScore != -1)
-                    	score += actualHorizontalScore;
+                	score += actualHorizontalScore;
                     
                     
                     int actualVerticalScore = countAdjacentStones(board, row, col, false);
-                    if(actualVerticalScore != -1)
-                    	score += actualVerticalScore;
+                	score += actualVerticalScore;
                 }
             }
         }
@@ -155,12 +149,16 @@ public class MyPlayer extends Player {
                 	 enemyCount++;
                 	 enemyStrike++;
                 	 
-                	 
                 	 strike = 0;
-//                	 if(enemyCount >= 2) {
-//                		 count = -1;
-//                		 break;
-//                	 }
+                	 
+                	 if(enemyCount == 2)
+                       	 count += (SCORE_2_STRIKE);
+                        else if(enemyCount == 3)
+                       	 count += (SCORE_3_STRIKE);
+                        else if(enemyCount == 4)
+                       	 count += (SCORE_4_STRIKE);
+                        else if(enemyCount == 5)
+                         	 count += SCORE_5_STRIKE;
                  }
                  else
                  {
@@ -198,10 +196,14 @@ public class MyPlayer extends Player {
                	 	enemyCount++;
                	 	strike = 0;
                	 	
-//					if(enemyCount >= 2) {
-//						count = -1;
-//						break;
-//					}
+               	 	if(enemyCount == 2)
+                   	 count += (SCORE_2_STRIKE);
+                    else if(enemyCount == 3)
+                   	 count += (SCORE_3_STRIKE);
+                    else if(enemyCount == 4)
+                   	 count += (SCORE_4_STRIKE);
+                    else if(enemyCount == 5)
+                      	 count += SCORE_5_STRIKE;
                 }
         		else
         		{
