@@ -55,7 +55,7 @@ public class MyPlayer extends Player {
         for (Move move : moves) {
             Board tempBoard = board.clone();
             tempBoard.doMove(move);
-
+            last_move = move;
             int value = minMax(tempBoard, depth - 1, alpha, beta, !maximizingPlayer, endTime);
 
             if (maximizingPlayer) {
@@ -98,33 +98,62 @@ public class MyPlayer extends Player {
         return score;
     }
 
+    
+    private int SCORE_4_STRIKE = 1000;
+    private int SCORE_3_STRIKE = 100;
+    private int SCORE_2_STRIKE = 10;
+    private Move last_move;
+    
     private int countAdjacentStones(Board board, int row, int col, boolean horizontal) {
         int count = 0;
         Player.Color playerColor = getColor();
         
-        Player.Color enemyColor;
-        if(playerColor == Player.Color.PLAYER1)
-        	enemyColor = Player.Color.PLAYER2;
-        else
-        	enemyColor = Player.Color.PLAYER1;
-        
+        Player.Color enemyColor = getOpponent(getColor());
 
         int enemyCount = 0;
+        int strike = 0;
         
         if(horizontal) {
              for (int iterCol = 0; iterCol < board.getSize(); iterCol++) {
                  if (board.getState(row, iterCol) == playerColor) {
                 	 count++;
+                	 strike++;
+                	 
+                	 if(strike == 2)
+                       	 count += SCORE_2_STRIKE;
+                        else if(strike == 3)
+                       	 count += SCORE_3_STRIKE;
+                        else if(strike == 4)
+                       	 count += SCORE_4_STRIKE;
                  }
                  else if(board.getState(row, iterCol) == enemyColor)
                  {
                 	 enemyCount++;
-
+                	 
+                	 if(strike == 2)
+                       	 count += SCORE_2_STRIKE;
+                        else if(strike == 3)
+                       	 count += SCORE_3_STRIKE;
+                        else if(strike == 4)
+                       	 count += SCORE_4_STRIKE;
+                	 
+                	 strike = 0;
                 	 if(enemyCount >= 2) {
                 		 count = -1;
                 		 break;
                 	 }
                  }
+                 else
+                 {
+                	 strike = 0;
+                 }
+                 
+                 if(strike == 2)
+                	 count += SCORE_2_STRIKE;
+                 else if(strike == 3)
+                	 count += SCORE_3_STRIKE;
+                 else if(strike == 4)
+                	 count += SCORE_4_STRIKE;
              }
         }
         else
@@ -132,16 +161,44 @@ public class MyPlayer extends Player {
         	for (int iterRow = 0; iterRow < board.getSize(); iterRow++) {
         		if (board.getState(iterRow, col) == playerColor) {
         			count++;
+        			strike++;
                 }
         		else if(board.getState(iterRow, col) == enemyColor)
                 {
                	 	enemyCount++;
+               	 	
+               	 	if(strike == 2)
+                   	 count += SCORE_2_STRIKE;
+                    else if(strike == 3)
+                   	 count += SCORE_3_STRIKE;
+                    else if(strike == 4)
+                   	 count += SCORE_4_STRIKE;
+               	 	
+               	 	strike = 0;
                	 	
 					if(enemyCount >= 2) {
 						count = -1;
 						break;
 					}
                 }
+        		else
+        		{
+        			if(strike == 2)
+                      	 count += SCORE_2_STRIKE;
+                       else if(strike == 3)
+                      	 count += SCORE_3_STRIKE;
+                       else if(strike == 4)
+                      	 count += SCORE_4_STRIKE;
+        			
+        			strike = 0;
+        		}
+        		
+        		if(strike == 2)
+                 	 count += SCORE_2_STRIKE;
+                  else if(strike == 3)
+                 	 count += SCORE_3_STRIKE;
+                  else if(strike == 4)
+                 	 count += SCORE_4_STRIKE;
         	}
         }
         
